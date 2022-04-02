@@ -23,8 +23,17 @@ public class Message {
     @Column(name = "tag")
     private String tag;
 
-    public Message(String text, String tag) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    public Message(String text, String tag, User user) {
+        this.author = user;
         this.text = text;
         this.tag = tag;
+    }
+
+    public String getAuthorName(){
+        return author != null ? author.getUsername() : "<none>";
     }
 }
