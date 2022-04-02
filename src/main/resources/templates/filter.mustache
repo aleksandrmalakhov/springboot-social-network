@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Filter</title>
+</head>
+
+<body>
+<a href="/main">Main</a>
+<br><br>
+<form method="post" action="filter">
+    <input type="text" name="filter" placeholder="Поиск">
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <button type="submit">Найти</button>
+</form>
+<br>
+<div>Список сообщений</div>
+{{#messages}}
+<div>
+    <b>{{id}}</b>
+    <span>{{text}}</span>
+    <i>{{tag}}</i>
+</div>
+{{/messages}}
+</body>
+</html>

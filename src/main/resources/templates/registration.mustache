@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+
+<body>
+Add new user
+{{#message}}
+    {{message}}
+{{/message}}
+<form method="post" action="/registration">
+    <div><label>User Name<input type="text" name="username"/></label></div>
+    <div><label>Password<input type="text" name="password"/></label></div>
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <div>
+        <button type="submit">Войти</button>
+    </div>
+</form>
+</body>
+</html>
