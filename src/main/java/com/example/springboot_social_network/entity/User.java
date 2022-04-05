@@ -27,6 +27,10 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    private String email;
+
+    private String activationCode;
+
     @Column(name = "active")
     private boolean active;
 
