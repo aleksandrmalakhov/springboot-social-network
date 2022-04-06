@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -28,7 +28,6 @@ public class UserService implements UserDetailsService {
 
     public boolean addUser(User user) {
         User userFromDb = userRepository.findByUsername(user.getUsername());
-
         if (userFromDb != null) {
             return false;
         }
@@ -38,15 +37,16 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(UUID.randomUUID().toString());
         userRepository.save(user);
 
-        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-            String message = String.format(
-                    "Hello, %s!\n" +
-                            "Welcome to new social network!\n" +
-                            "Please, visit next link: http://localhost:8080/activate/%s",
-                    user.getUsername(), user.getActivationCode());
-
-            mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
-        }
+        sendMessage(user);
+//        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+//            String message = String.format(
+//                    "Hello, %s!\n" +
+//                            "Welcome to new social network!\n" +
+//                            "Please, visit next link: http://localhost:8080/activate/%s",
+//                    user.getUsername(), user.getActivationCode());
+//
+//            mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
+//        }
 
         return true;
     }
@@ -60,5 +60,59 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(null);
         userRepository.save(user);
         return true;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void saveUser(User user, String username, Map<String, String> form) {
+        user.setUsername(username);
+        Set<String> roles = Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
+        user.getRoles().clear();
+
+        for (String key : form.keySet()) {
+            if (roles.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+        userRepository.save(user);
+    }
+
+    public void updateProfile(User user, String password, String email) {
+        String userEmail = user.getEmail();
+        boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
+                (userEmail != null && !userEmail.equals(email));
+
+        if (isEmailChanged) {
+            user.setEmail(email);
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                user.setActivationCode(UUID.randomUUID().toString());
+            }
+        }
+
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(password);
+        }
+
+        userRepository.save(user);
+
+        if (isEmailChanged) {
+            sendMessage(user);
+        }
+    }
+
+    private void sendMessage(User user) {
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            String message = String.format(
+                    "Hello, %s!\n" +
+                            "Welcome to new social network!\n" +
+                            "Please, visit next link: http://localhost:8080/activate/%s",
+                    user.getUsername(), user.getActivationCode());
+
+            mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
+        }
     }
 }
