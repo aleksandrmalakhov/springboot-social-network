@@ -20,14 +20,28 @@
         </button>
     </div>
 
-    <div class="collapse" id="collapseExample">
+    <div class="collapse <#if message??>show</#if>" id="collapseExample">
         <form method="post" enctype="multipart/form-data">
             <div class="input-group mb-3">
-                <input class="form-control" type="text" name="text" placeholder="Введите сообщение">
+                <input type="text" name="text" value="<#if message??>${message.text}</#if>"
+                       class="form-control ${(textError??)?string('is-invalid', '')}"
+                       placeholder="Введите сообщение">
             </div>
+            <#if textError??>
+                <div class="invalid-feedback">
+                    ${textError}
+                </div>
+            </#if>
             <div class="input-group mb-3">
-                <input class="form-control" type="text" name="tag" placeholder="Тэг">
+                <input type="text" name="tag" value="<#if message??>${message.tag}</#if>"
+                       class="form-control ${(tagError??)?string('is-invalid', '')}"
+                       placeholder="Тэг">
             </div>
+            <#if tagError??>
+                <div class="invalid-feedback">
+                    ${tagError}
+                </div>
+            </#if>
             <div class="input-group mb-3">
                 <input class="form-control" type="file" name="file">
             </div>

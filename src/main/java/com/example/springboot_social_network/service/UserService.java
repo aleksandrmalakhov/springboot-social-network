@@ -3,9 +3,11 @@ package com.example.springboot_social_network.service;
 import com.example.springboot_social_network.entity.Role;
 import com.example.springboot_social_network.entity.User;
 import com.example.springboot_social_network.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,15 +17,23 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final MailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
+    @Value("${link.path}")
+    private String linkPath;
 
-    public UserService(UserRepository userRepository, MailSender mailSender) {
+    public UserService(UserRepository userRepository, MailSender mailSender, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+        return user;
     }
 
     public boolean addUser(User user) {
@@ -35,19 +45,10 @@ public class UserService implements UserDetailsService {
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
         sendMessage(user);
-//        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-//            String message = String.format(
-//                    "Hello, %s!\n" +
-//                            "Welcome to new social network!\n" +
-//                            "Please, visit next link: http://localhost:8080/activate/%s",
-//                    user.getUsername(), user.getActivationCode());
-//
-//            mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
-//        }
-
         return true;
     }
 
@@ -109,7 +110,7 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s!\n" +
                             "Welcome to new social network!\n" +
-                            "Please, visit next link: http://localhost:8080/activate/%s",
+                            "Please, visit next link: " + linkPath + "/activate/%s",
                     user.getUsername(), user.getActivationCode());
 
             mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
