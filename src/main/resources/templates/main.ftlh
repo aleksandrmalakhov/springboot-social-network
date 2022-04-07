@@ -1,4 +1,5 @@
 <#import "parts/common.ftl" as c>
+<#include "parts/security.ftlh">
 
 <@c.page>
     <div class="input-group mb-3">
@@ -12,43 +13,7 @@
             </div>
         </form>
     </div>
-
-    <div class="input-group mb-3">
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                aria-expanded="false" aria-controls="collapseExample">
-            Add New Message
-        </button>
-    </div>
-
-    <div class="collapse <#if message??>show</#if>" id="collapseExample">
-        <form method="post" enctype="multipart/form-data">
-            <div class="input-group mb-3">
-                <input type="text" name="text" value="<#if message??>${message.text}</#if>"
-                       class="form-control ${(textError??)?string('is-invalid', '')}"
-                       placeholder="Введите сообщение">
-            </div>
-            <#if textError??>
-                <div class="invalid-feedback">
-                    ${textError}
-                </div>
-            </#if>
-            <div class="input-group mb-3">
-                <input type="text" name="tag" value="<#if message??>${message.tag}</#if>"
-                       class="form-control ${(tagError??)?string('is-invalid', '')}"
-                       placeholder="Тэг">
-            </div>
-            <#if tagError??>
-                <div class="invalid-feedback">
-                    ${tagError}
-                </div>
-            </#if>
-            <div class="input-group mb-3">
-                <input class="form-control" type="file" name="file">
-            </div>
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <button class="btn btn-primary" type="submit">Добавить</button>
-        </form>
-    </div>
+    <#include "parts/messageEdit.ftlh"/>
 
     <div class="row row-cols-1 row-cols-md-3 g-3">
         <#list messages as message>
@@ -59,10 +24,15 @@
                     </#if>
                     <div class="m-2">
                         <span>${message.text}</span>
-                        <i>${message.tag}</i>
+                        <br>
+                        <i>#${message.tag}</i>
                     </div>
                     <div class="card-footer text-muted">
-                        ${message.authorName}
+                        <a href="user-messages/${message.author.id}">${message.authorName}</a>
+                        <#if message.author.id == currentUserId>
+                            <a class="btn btn-primary"
+                               href="user-messages/${message.author.id}?message=${message.id}">Edit</a>
+                        </#if>
                     </div>
                 </div>
             </div>

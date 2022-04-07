@@ -110,8 +110,8 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s!\n" +
                             "Welcome to new social network!\n" +
-                            "Please, visit next link: " + linkPath + "/activate/%s",
-                    user.getUsername(), user.getActivationCode());
+                            "Please, visit next link: %s/activate/%s",
+                    user.getUsername(), linkPath, user.getActivationCode());
 
             mailSender.sendSimpleEmail(user.getEmail(), "Activation code", message);
         }
