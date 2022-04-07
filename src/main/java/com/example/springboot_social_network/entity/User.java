@@ -31,10 +31,6 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Transient
-    @NotBlank(message = "Password confirmation cannot be empty")
-    private String password2;
-
     @Email(message = "Email is no correct")
     @NotBlank(message = "Email cannot be empty")
     @Column(name = "email")
