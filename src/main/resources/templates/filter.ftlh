@@ -3,13 +3,13 @@
 
 <@c.page>
     <a href="/main">Main</a>
-    <br><br>
+    <br/><br/>
     <form method="post" action="filter">
-        <input type="text" name="filter" placeholder="Поиск">
+        <input type="text" name="filter" placeholder="Поиск"/>
         <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
         <button type="submit">Найти</button>
     </form>
-    <br>
+    <br/>
     <div>Список сообщений</div>
     <#list messages as message>
         <div>

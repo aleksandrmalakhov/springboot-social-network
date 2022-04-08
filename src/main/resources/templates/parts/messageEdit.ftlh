@@ -10,7 +10,7 @@
         <div class="input-group mb-3">
             <input type="text" name="text" value="<#if message??>${message.text}</#if>"
                    class="form-control ${(textError??)?string('is-invalid', '')}"
-                   placeholder="Введите сообщение">
+                   placeholder="Введите сообщение"/>
         </div>
         <#if textError??>
             <div class="invalid-feedback">
@@ -20,7 +20,7 @@
         <div class="input-group mb-3">
             <input type="text" name="tag" value="<#if message??>${message.tag}</#if>"
                    class="form-control ${(tagError??)?string('is-invalid', '')}"
-                   placeholder="Тэг">
+                   placeholder="Тэг"/>
         </div>
         <#if tagError??>
             <div class="invalid-feedback">
@@ -28,7 +28,7 @@
             </div>
         </#if>
         <div class="input-group mb-3">
-            <input class="form-control" type="file" name="file">
+            <input class="form-control" type="file" name="file"/>
         </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
         <input type="hidden" name="id" value="<#if message??>${message.id}<#else>-1</#if>"/>
