@@ -1,5 +1,6 @@
 package com.example.springboot_social_network.entity;
 
+import com.example.springboot_social_network.entity.util.MessageHelper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,9 +8,10 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @Setter
 @Getter
 @Table(name = "messages")
@@ -35,13 +37,24 @@ public class Message {
     @Column(name = "filename")
     private String filename;
 
+    @ManyToMany
+    @JoinTable(
+            name = "message_likes",
+            joinColumns = {@JoinColumn(name = "message_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+    private Set<User> likes;
+
+    public Message() {
+        this.likes = new HashSet<>();
+    }
+
     public Message(String text, String tag, User user) {
         this.author = user;
         this.text = text;
         this.tag = tag;
     }
 
-    public String getAuthorName(){
-        return author != null ? author.getUsername() : "<none>";
+    public String getAuthorName() {
+        return MessageHelper.getAuthorName(author);
     }
 }
