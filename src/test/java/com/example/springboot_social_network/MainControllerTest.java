@@ -73,6 +73,11 @@ class MainControllerTest {
         this.mockMvc.perform(multipart)
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//div[@id='message-list']/div").nodeCount(5));
+                .andExpect(xpath("//div[@id='message-list']/div").nodeCount(5))
+                .andExpect(xpath("//div[@id='message-list']/div[@data-id=10]").exists())
+                .andExpect(xpath("//div[@id='message-list']/div[@data-id=10]/div/div[1]/span")
+                        .string("fifth"))
+                .andExpect(xpath("//div[@id='message-list']/div[@data-id=10]/div/div[1]/i")
+                        .string("#new one"));
     }
 }
