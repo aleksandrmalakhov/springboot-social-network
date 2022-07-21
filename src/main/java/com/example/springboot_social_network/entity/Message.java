@@ -2,7 +2,6 @@ package com.example.springboot_social_network.entity;
 
 import com.example.springboot_social_network.entity.util.MessageHelper;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 

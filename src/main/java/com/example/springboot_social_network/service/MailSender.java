@@ -14,7 +14,6 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailSender {
     private final JavaMailSender javaMailSender;
-
     @Value("${spring.mail.username}")
     private String username;
 
@@ -35,7 +34,7 @@ public class MailSender {
 
     public void sendEmailWithAttachment(String emailTo, String subject, String message, String attachment) throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         FileSystemResource file = new FileSystemResource(ResourceUtils.getFile(attachment));
 
         messageHelper.setTo(emailTo);

@@ -1,5 +1,6 @@
 package com.example.springboot_social_network.controller;
 
+import lombok.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -8,7 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ControllerUtils {
-    static Map<String, String> getErrors(BindingResult bindingResult) {
+    public static Map<String, String> getErrors(@NonNull BindingResult bindingResult) {
         Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
                 fieldError -> fieldError.getField() + "Error",
                 FieldError::getDefaultMessage);
